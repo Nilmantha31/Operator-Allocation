@@ -62,17 +62,18 @@ def opAutoAllocation_task(self, request_data):
 
             problem.solve()
 
-            assignments = {
-                f'machine_{m}': f'employee_{e}'
+            assignments = [
+                {'dtlId':m, 'empId' :e}
                 for m in machines 
                     for e in employees
                     if (x[m,e]).value() >= 0.5
                         if machine_outputs[m].value() > 0
-            }   
+            ]   
 
-            hourly_outputs = {}
+            hourly_outputs = []
             for op_id, output in outputs.items():
-                hourly_outputs[op_id] = output.value()
+                hourly_outputs.append({'opId': op_id, 'pcs': output.value()})
+
 
             return  request_data, assignments, hourly_outputs, z.value()
 
