@@ -1,8 +1,10 @@
 from .worker import celery_app
-from flask import Flask, jsonify
+from flask import Flask
 from .blueprints.opAutoAllocation_bp import opAutoAllocationBp
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 flask_app = app
 

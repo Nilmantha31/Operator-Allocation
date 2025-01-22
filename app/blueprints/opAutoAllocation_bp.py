@@ -11,12 +11,12 @@ def index():
 
 @opAutoAllocationBp.route("/opAutoAllocation", methods=['POST'])
 def opAutoAllocation():
+
     if not request.is_json:
         abort(400, description="Request must be JSON.")
 
     try:
         request_data = request.get_json()
-
         task = opAutoAllocation_task.apply_async(args=[request_data])
 
         result = task.get()

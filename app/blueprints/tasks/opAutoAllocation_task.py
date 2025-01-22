@@ -1,8 +1,7 @@
 from ...worker import celery_app
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum, value
-from flask import jsonify
 
-@celery_app.task()
+@celery_app.task(bind=True)
 def opAutoAllocation_task(self, request_data):
         try:
             machines = {m["machine_id"]: m["operation_ids"] for m in request_data["machines"]}
@@ -75,7 +74,7 @@ def opAutoAllocation_task(self, request_data):
             for op_id, output in outputs.items():
                 hourly_outputs[op_id] = output.value()
 
-            return jsonify(assignments=assignments, hourly_outputs = hourly_outputs, bottleneck_value=z.value())
+            return  request_data, assignments, hourly_outputs, z.value()
 
         except Exception as e:
             raise self.retry(exc=e)
