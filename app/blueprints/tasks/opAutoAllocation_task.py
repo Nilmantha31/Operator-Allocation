@@ -1,5 +1,6 @@
 from ...worker import celery_app
 from pulp import LpMaximize, LpProblem, LpVariable, lpSum, value
+import math
 
 @celery_app.task(bind=True)
 def opAutoAllocation_task(self, request_data):
@@ -72,10 +73,10 @@ def opAutoAllocation_task(self, request_data):
 
             hourly_outputs = []
             for op_id, output in outputs.items():
-                hourly_outputs.append({'opId': op_id, 'pcs': output.value()})
+                hourly_outputs.append({'opId': op_id, 'pcs': math.floor(output.value())})
 
 
-            return  request_data, assignments, hourly_outputs, z.value()
+            return  request_data, assignments, hourly_outputs, math.floor(z.value())
 
         except Exception as e:
             raise self.retry(exc=e)
