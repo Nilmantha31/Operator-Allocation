@@ -1,16 +1,16 @@
 from .worker import celery_app
-from flask import Flask, jsonify
-from .blueprints.opAutoAllocation_task import sum
+from app.config import DevelopmentConfig
+from flask import Flask
+from .blueprints.opAutoAllocation_bp import opAutoAllocationBp
+from flask_cors import CORS
 
 app = Flask(__name__)
+app.config.from_object(DevelopmentConfig)
+CORS(app)
 
 flask_app = app
 
 celery = celery_app
 
-@app.route('/')
-def sumtask():
-    task = sum.apply_async()
-    result = task.get()
-    return jsonify(result)
+app.register_blueprint(opAutoAllocationBp, url_prefix='/api')
 
